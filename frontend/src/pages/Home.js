@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import {Link} from 'react-router-dom';
 import TrackCard from '../components/TrackCard';
 import { useDeezer } from '../hooks/useDeezer';
 import { usePlayer } from '../context/PlayerContext';
 
 const Home = () => {
   const [chartTracks, setChartTracks] = useState([]);
-  const [genres, setGenres] = useState([]);
   const { getChart, getGenres, loading, error } = useDeezer();
   const { playQueue } = usePlayer();
 
@@ -14,9 +14,6 @@ const Home = () => {
     try {
       const chartData = await getChart(20);
       if (chartData?.data) setChartTracks(chartData.data);
-
-      const genresData = await getGenres();
-      if (genresData?.data) setGenres(genresData.data.slice(0, 8));
     } catch (err) {
       console.error('Failed to load initial data:', err);
     }
@@ -90,56 +87,28 @@ const Home = () => {
         )}
       </div>
 
-      {genres.length > 0 && (
-        <div className="section">
-          <h2 className="section-title">Browse Genres</h2>
-          <div className="grid grid-3">
-            {genres.map((genre) => (
-              <div 
-                key={genre.id}
-                className="card"
-                style={{
-                  background: `linear-gradient(135deg, ${getRandomGradient()})`,
-                  height: '120px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'relative',
-                  overflow: 'hidden'
-                }}
-              >
-                <h3 style={{ 
-                  fontSize: '18px', 
-                  fontWeight: '600',
-                  textAlign: 'center',
-                  zIndex: 1
-                }}>
-                  {genre.name}
-                </h3>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       <div className="section">
         <h2 className="section-title">Quick Actions</h2>
         <div className="grid grid-2">
-          <div className="card" style={{ textAlign: 'center', padding: '30px' }}>
-            <div style={{ fontSize: '48px', marginBottom: '15px' }}>🔍</div>
-            <h3 style={{ marginBottom: '10px' }}>Discover Music</h3>
-            <p style={{ color: '#b3b3b3', fontSize: '14px' }}>
-              Search for your favorite artists, albums, and tracks
-            </p>
-          </div>
+          <Link to='/search' className='link'>
+            <div className="card" style={{ textAlign: 'center', padding: '30px' }}>
+              <div style={{ fontSize: '48px', marginBottom: '15px' }}>🔍</div>
+              <h3 style={{ marginBottom: '10px' }}>Discover Music</h3>
+              <p style={{ color: '#b3b3b3', fontSize: '14px' }}>
+                Search for your favorite artists, albums, and tracks
+              </p>
+            </div>
+          </Link>
           
-          <div className="card" style={{ textAlign: 'center', padding: '30px' }}>
-            <div style={{ fontSize: '48px', marginBottom: '15px' }}>🎵</div>
-            <h3 style={{ marginBottom: '10px' }}>Music Player</h3>
-            <p style={{ color: '#b3b3b3', fontSize: '14px' }}>
-              Control your music playback and manage your queue
-            </p>
-          </div>
+          <Link to='player' className='link'>
+            <div className="card" style={{ textAlign: 'center', padding: '30px' }}>
+              <div style={{ fontSize: '48px', marginBottom: '15px' }}>🎵</div>
+              <h3 style={{ marginBottom: '10px' }}>Music Player</h3>
+              <p style={{ color: '#b3b3b3', fontSize: '14px' }}>
+                Control your music playback and manage your queue
+              </p>
+            </div>
+          </Link>
         </div>
       </div>
     </div>
@@ -153,19 +122,5 @@ const getGreeting = () => {
   return 'evening';
 };
 
-const getRandomGradient = () => {
-  const gradients = [
-    '#ff6b6b, #4ecdc4',
-    '#45b7d1, #96ceb4',
-    '#feca57, #ff9ff3',
-    '#48dbfb, #0abde3',
-    '#ff9f43, #feca57',
-    '#5f27cd, #00d2d3',
-    '#a55eea, #26de81',
-    '#fd79a8, #6c5ce7'
-  ];
-  
-  return gradients[Math.floor(Math.random() * gradients.length)];
-};
 
 export default Home;
